@@ -3,10 +3,25 @@
 #include <stdlib.h>
 #include <complex.h>
 
+/*
+ * HW1 INSTRUCTIONS
+ * will need array of ints for f(x) -> complex arrays
+ * will need array of ints for f'(x) -> complex arrays
+ * coefficients of polynomials are real
+ */
+
+// Pretty prints complex value
 void prcmx(double complex v);
 
-double complex func(double complex x);
-double complex derivative(double complex x);
+// Computes polynomial
+double complex polynomial(double complex* arr, double complex input, int size);
+
+// Newton Method calculation
+void newtons_method(double complex* fx, 
+                    double complex* dx,
+                    double complex init,
+                    int size,
+                    int iters);
 
 int main()
 {
@@ -68,14 +83,22 @@ int main()
         prcmx(dx_coeffs[i]);
     }
 
+    double complex evaluate;
+    double complex init = 1 + 0*I;
+
+    evaluate = polynomial(coeffs, init, size);
+
+    printf("--------------------------\n");
+    printf("The polynomial evaluated at x=1 is: ");
+    prcmx(evaluate);
 
 
+    printf("--------------------------\n");
+    printf("Calling Newton's Method for root finding\n");
 
-   /*
-    * will need array of ints for f(x) -> complex arrays
-    * will need array of ints for f'(x) -> complex arrays
-    * coefficients of polynomials are real
-    */
+    int iters = 10;
+
+    newtons_method(coeffs, dx_coeffs, init, size, iters);
 
     free(coeffs);
     free(dx_coeffs);
@@ -93,12 +116,32 @@ void prcmx(double complex v)
     printf("%lf + %lf * i\n", a, b);
 }
 
-double complex func(double complex x)
+
+double complex polynomial(double complex* arr, double complex input, int size)
 {
-    return cpow(x, 3) - 30*x - 36;
+    double complex total = 0 + 0*I;
+
+    for (int i = 0; i < size; ++i)
+        total += arr[i] * cpow(input, i);
+
+    return total;
 }
 
-double complex derivative(double complex x)
+void newtons_method(double complex* fx, 
+                    double complex* dx,
+                    double complex init,
+                    int size,
+                    int iters)
 {
-    return 3*cpow(x, 2) - 30;
+    double complex curr_root = init;
+    printf("curr estimate at iter 0: ");
+    prcmx(curr_root);
+
+
+    for (int i = 0; i < iters; ++i) {
+        curr_root = curr_root - polynomial(fx, curr_root, size)/polynomial(dx, curr_root, size-1);
+        printf("curr estimate at iter %d: ", i);
+        prcmx(curr_root);
+    }
+
 }
