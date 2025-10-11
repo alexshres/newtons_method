@@ -60,7 +60,6 @@ int main()
         cpx_coeff = coeff + 0*I;
         // Adding complex coefficient to appropriate degree index
         coeffs[degree-i] = cpx_coeff;
-        prcmx(coeffs[degree-i]);
 
         // Updating derivative coeffs now
         // Will return error if we try to update dx_coeffs after degree - 1
@@ -84,12 +83,12 @@ int main()
     }
 
     double complex evaluate;
-    double complex init = 1 + 0*I;
+    double complex init = 1 + 1*I;
 
     evaluate = polynomial(coeffs, init, size);
 
     printf("--------------------------\n");
-    printf("The polynomial evaluated at x=1 is: ");
+    printf("The polynomial evaluated at x=1+1*i is: ");
     prcmx(evaluate);
 
 
