@@ -145,7 +145,7 @@ void newtons_method(double complex* fx,
 
     for (int i = 0; i < iters; ++i) {
         curr_root = curr_root - polynomial(fx, curr_root, size)/polynomial(dx, curr_root, size-1);
-        printf("curr estimate at iter %d: ", i);
+        printf("curr estimate at iter %d: ", i+1);
         prcmx(curr_root);
     }
 
