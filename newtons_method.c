@@ -35,6 +35,12 @@ int main()
 
     size = degree + 1;
 
+    if (size == 1) {
+        printf("Constant functions will not have any roots unless the constant is 0 in which case the entire real number line is a solution\n.");
+        return 0;
+    }
+
+
     // Creating complex coefficients to make things easier when 
     // calculating derivatives and finding potential complex roots
     coeffs = (double complex*) malloc(size * sizeof(double complex));
