@@ -7,9 +7,10 @@
  * HW2 INSTRUCTIONS 
  * Use synthetic division to find ALL roots
  * of a polynomial.
- *
  */
 
+// Creating a struc to make it easier to 
+// return from the synthetic function
 typedef struct SynDivOut {
     double complex* fx;
     double complex* dx;
