@@ -3,11 +3,6 @@
 #include <stdlib.h>
 #include <complex.h>
 
-/*
- * HW2 INSTRUCTIONS 
- * Use synthetic division to find ALL roots
- * of a polynomial.
- */
 
 // Pretty prints complex value
 void prcmx(double complex v);

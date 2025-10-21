@@ -3,12 +3,6 @@
 #include <stdlib.h>
 #include <complex.h>
 
-/*
- * HW1 INSTRUCTIONS
- * will need array of ints for f(x) -> complex arrays
- * will need array of ints for f'(x) -> complex arrays
- * coefficients of polynomials are real
- */
 
 // Pretty prints complex value
 void prcmx(double complex v);
