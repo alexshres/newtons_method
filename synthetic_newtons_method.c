@@ -12,9 +12,6 @@
 // Pretty prints complex value
 void prcmx(double complex v);
 
-// Computes polynomial
-double complex polynomial(double complex* arr, double complex input, int size);
-
 // Synthetic division
 void syntheticDivision(double complex* fx,
                        double complex root,
@@ -22,11 +19,9 @@ void syntheticDivision(double complex* fx,
                        double complex* fx_val,
                        double complex* dx_val);
 
-
 // Newton Method calculation
 void newtons_method(double complex* fx, 
                     double complex* dx,
-                    double complex init,
                     int size,
                     int iters);
 
@@ -95,24 +90,12 @@ int main()
         prcmx(dx_coeffs[i]);
     }
 
-    double complex evaluate;
-    double complex init = 1 + 1*I;
-
-    evaluate = polynomial(coeffs, init, size);
-
-    /*
-    printf("--------------------------\n");
-    printf("The polynomial evaluated at x=1+1*i is: ");
-    prcmx(evaluate);
-    */
-
-
     printf("--------------------------\n");
     printf("Calling Newton's Method for root finding\n");
 
-    int iters = 1000;
+    int iters = 50;
 
-    newtons_method(coeffs, dx_coeffs, init, size, iters);
+    newtons_method(coeffs, dx_coeffs, size, iters);
 
     free(coeffs);
     free(dx_coeffs);
@@ -128,17 +111,6 @@ void prcmx(double complex v)
     b = cimag(v);
 
     printf("%lf + %lf * i\n", a, b);
-}
-
-
-double complex polynomial(double complex* arr, double complex input, int size)
-{
-    double complex total = 0 + 0*I;
-
-    for (int i = 0; i < size; ++i)
-        total += arr[i] * cpow(input, i);
-
-    return total;
 }
 
 void synthetic_division(double complex* fx,
@@ -172,7 +144,6 @@ void synthetic_division(double complex* fx,
 
 void newtons_method(double complex* fx, 
                     double complex* dx,
-                    double complex init,
                     int size,
                     int iters)
 {
@@ -186,7 +157,7 @@ void newtons_method(double complex* fx,
     for (int i=0; i < size; ++i) 
         curr_fx[i] = fx[i];
 
-    double complex curr_root = init;
+    double complex curr_root;
 
     // find each root
     for (int r = 0; r < num_roots; ++r) {
@@ -197,6 +168,8 @@ void newtons_method(double complex* fx,
         printf("curr estimate at iter 0: ");
         prcmx(curr_root);
         */
+
+        curr_root = 2.0 * cexp(2.0 * M_PI * I * r / (num_roots + 1));
 
         double complex f_val, df_val;
 
