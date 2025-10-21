@@ -100,15 +100,17 @@ int main()
 
     evaluate = polynomial(coeffs, init, size);
 
+    /*
     printf("--------------------------\n");
     printf("The polynomial evaluated at x=1+1*i is: ");
     prcmx(evaluate);
+    */
 
 
     printf("--------------------------\n");
     printf("Calling Newton's Method for root finding\n");
 
-    int iters = 10;
+    int iters = 1000;
 
     newtons_method(coeffs, dx_coeffs, init, size, iters);
 
@@ -184,14 +186,17 @@ void newtons_method(double complex* fx,
     for (int i=0; i < size; ++i) 
         curr_fx[i] = fx[i];
 
+    double complex curr_root = init;
+
     // find each root
     for (int r = 0; r < num_roots; ++r) {
         printf("\n--------------------------\n");
         printf("Finding root %d:\n", r+1);
 
-        double complex curr_root = init;
+        /*
         printf("curr estimate at iter 0: ");
         prcmx(curr_root);
+        */
 
         double complex f_val, df_val;
 
@@ -199,8 +204,10 @@ void newtons_method(double complex* fx,
         for (int i = 0; i < iters; ++i) {
             synthetic_division(curr_fx, curr_root, curr_size, &f_val, &df_val);
             curr_root = curr_root - f_val/df_val;
+            /*
             printf("curr estimate ater %d: ", i+1);
             prcmx(curr_root);
+            */
         }
 
         printf("Root %d found: ", r+1);
