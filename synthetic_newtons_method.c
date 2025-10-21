@@ -9,13 +9,6 @@
  * of a polynomial.
  */
 
-// Creating a struc to make it easier to 
-// return from the synthetic function
-typedef struct SynDivOut {
-    double complex* fx;
-    double complex* dx;
-} as sd_out;
-
 // Pretty prints complex value
 void prcmx(double complex v);
 
@@ -23,7 +16,11 @@ void prcmx(double complex v);
 double complex polynomial(double complex* arr, double complex input, int size);
 
 // Synthetic division
-void syntheticDivision(const double complex& guess, double complex* fx, int fx_size, sd_out& out);
+void syntheticDivision(double complex* fx,
+                       double complex root,
+                       int size,
+                       double complex* fx_val,
+                       double complex* dx_val);
 
 
 // Newton Method calculation
@@ -142,21 +139,90 @@ double complex polynomial(double complex* arr, double complex input, int size)
     return total;
 }
 
+void synthetic_division(double complex* fx,
+                        double complex root,
+                        int size,
+                        double complex* fx_val,
+                        double complex* dx_val)
+{
+
+    double complex*b = (double complex*) malloc(size*sizeof(double complex));
+
+    // first synthetic division
+    b[size-1] = fx[size-1];
+
+    for (int i = size-2; i >= 0; --i)
+        b[i] = fx[i] + b[i+1]*root;
+
+    // b[0] is f(x) -> the remainder
+    *fx_val = b[0];
+
+    // second synthetic division
+    double complex carry = b[size-1];
+    for (int i = size-2; i>=1; --i)
+        carry = b[i] + carry*root;
+
+    // carry is f'(x)
+    *dx_val = carry;
+
+    free(b);
+}
+
 void newtons_method(double complex* fx, 
                     double complex* dx,
                     double complex init,
                     int size,
                     int iters)
 {
-    double complex curr_root = init;
-    printf("curr estimate at iter 0: ");
-    prcmx(curr_root);
+    int curr_size = size;
+    int num_roots = size-1;
 
+    // allocating for storing deflated polynomials
+    double complex* curr_fx = (double complex*) malloc(size * sizeof(double complex));
+    double complex* temp_fx = (double complex*) malloc(size * sizeof(double complex));
 
-    for (int i = 0; i < iters; ++i) {
-        curr_root = curr_root - polynomial(fx, curr_root, size)/polynomial(dx, curr_root, size-1);
-        printf("curr estimate at iter %d: ", i+1);
+    for (int i=0; i < size; ++i) 
+        curr_fx[i] = fx[i];
+
+    // find each root
+    for (int r = 0; r < num_roots; ++r) {
+        printf("\n--------------------------\n");
+        printf("Finding root %d:\n", r+1);
+
+        double complex curr_root = init;
+        printf("curr estimate at iter 0: ");
         prcmx(curr_root);
+
+        double complex f_val, df_val;
+
+        // newtons method iteration with current guess
+        for (int i = 0; i < iters; ++i) {
+            synthetic_division(curr_fx, curr_root, curr_size, &f_val, &df_val);
+            curr_root = curr_root - f_val/df_val;
+            printf("curr estimate ater %d: ", i+1);
+            prcmx(curr_root);
+        }
+
+        printf("Root %d found: ", r+1);
+        prcmx(curr_root);
+
+        // if not the final root, deflate polynomial
+        if (r < num_roots-1) {
+            temp_fx[curr_size-1] = curr_fx[curr_size-1];
+            for (int i = curr_size-2; i>=0; --i) {
+                temp_fx[i] = curr_fx[i] + temp_fx[i+1]*curr_root;
+            }
+
+            curr_size--;
+            for (int i = 0; i < curr_size; ++i) {
+                curr_fx[i] = temp_fx[i+1];
+            }
+        }
     }
 
+    printf("\n--------------------------\n");
+    printf("All roots have been found!\n");
+
+    free(curr_fx);
+    free(temp_fx);
 }
